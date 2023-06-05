@@ -14,15 +14,35 @@
    <string>Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="2">
-    <widget class="QPushButton" name="butt_filter">
+   <item row="2" column="3">
+    <widget class="QPushButton" name="butt_cancel">
      <property name="text">
-      <string>Фильтр</string>
+      <string>Отмена</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="butt_open">
+     <property name="maximumSize">
+      <size>
+       <width>100</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>Выбрать банк</string>
      </property>
     </widget>
    </item>
    <item row="0" column="0" colspan="4">
     <widget class="QTableView" name="table_view"/>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="butt_filter">
+     <property name="text">
+      <string>Фильтр</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="butt_search">
@@ -51,10 +71,10 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="butt_open">
+   <item row="2" column="1">
+    <widget class="QPushButton" name="butt_add">
      <property name="text">
-      <string>Выбрать банк</string>
+      <string>Добавить</string>
      </property>
     </widget>
    </item>

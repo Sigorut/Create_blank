@@ -10,15 +10,18 @@ CONFIG += c++17
 
 SOURCES += \
     add_ex.cpp \
+    edit_ex.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     add_ex.h \
+    edit_ex.h \
     mainwindow.h
 
 FORMS += \
     add_ex.ui \
+    edit_ex.ui \
     mainwindow.ui
 
 # Default rules for deployment.

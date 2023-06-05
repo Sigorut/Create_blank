@@ -1,2 +1,9 @@
-<!DOCTYPE RCC>
-<RCC version="1.0"/>
+<RCC>
+    <qresource prefix="/">
+        <file>Script_table_comp.js</file>
+        <file>Script_table_seq.js</file>
+        <file>Script_table_word.js</file>
+        <file>Script_threetf.js</file>
+        <file>Script_add_ex.js</file>
+    </qresource>
+</RCC>

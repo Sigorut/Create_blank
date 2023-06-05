@@ -2,5 +2,11 @@
     <qresource prefix="/">
         <file>blank.html</file>
         <file>Style.css</file>
+        <file>number_response.html</file>
+        <file>string_response.html</file>
+        <file>table_comp_response.html</file>
+        <file>table_seq_response.html</file>
+        <file>table_word_response.html</file>
+        <file>threetf.html</file>
     </qresource>
 </RCC>
