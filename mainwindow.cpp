@@ -107,12 +107,12 @@ void MainWindow::add_form_one_ex(QJsonObject ex)
 
 void MainWindow::create_html_num_string_ex(int id, int type)
 {
-//    QString type_ex;
-//    if(type == 1){
-//        type_ex = "num";
-//    }else{
-//        type_ex = "string";
-//    }
+    //    QString type_ex;
+    //    if(type == 1){
+    //        type_ex = "num";
+    //    }else{
+    //        type_ex = "string";
+    //    }
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_num(" + QString::number(id) + ")",
                                 [&](QVariant result)->void{
@@ -125,19 +125,14 @@ void MainWindow::create_html_num_string_ex(int id, int type)
 
 void MainWindow::fill_html_num_string_ex(QJsonObject ex)
 {
-    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
-    if(ex["image"].toString().size()){
-        set_field_image(ex);
-    }
-    set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
-    set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
+    fill_html_defauld_fields(ex);
 }
 
 void MainWindow::create_html_comp_ex(QJsonObject ex)
 {
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_comp(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["answer"].toArray().size()) + ")",
-                                [&](QVariant result)->void{
+            [&](QVariant result)->void{
         flg = true;
     });
     while(!flg){
@@ -168,7 +163,7 @@ void MainWindow::create_html_seq_ex(QJsonObject ex)
 {
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_seq(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["options"].toArray().size()) + ")",
-                                [&](QVariant result)->void{
+            [&](QVariant result)->void{
         flg = true;
     });
     while(!flg){
@@ -178,28 +173,23 @@ void MainWindow::create_html_seq_ex(QJsonObject ex)
 
 void MainWindow::fill_html_seq_ex(QJsonObject ex)
 {
-        set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
-        if(ex["image"].toString().size()){
-            set_field_image(ex);
+    fill_html_defauld_fields(ex);
+    QJsonArray arr_options = ex["options"].toArray();
+    QJsonObject single_option;
+    for(int i = 0; i < arr_options.size(); i++){
+        single_option = arr_options[i].toObject();
+        foreach(const QString& key, single_option.keys()) {
+            QJsonValue value = single_option.value(key);
+            set_field_string(value.toString(), "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
         }
-        QJsonArray arr_options = ex["options"].toArray();
-        QJsonObject single_option;
-        for(int i = 0; i < arr_options.size(); i++){
-            single_option = arr_options[i].toObject();
-            foreach(const QString& key, single_option.keys()) {
-                QJsonValue value = single_option.value(key);
-                set_field_string(value.toString(), "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
-            }
-        }
-        set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
-        set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
+    }
 }
 
 void MainWindow::create_html_table_word_ex(QJsonObject ex)
 {
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_table_word(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["count_rows"].toInt()) + ", " + QString::number(ex["count_cols"].toInt()) + ")",
-                                [&](QVariant result)->void{
+            [&](QVariant result)->void{
         flg = true;
     });
     while(!flg){
@@ -210,11 +200,7 @@ void MainWindow::create_html_table_word_ex(QJsonObject ex)
 
 void MainWindow::fill_html_table_word_ex(QJsonObject ex)
 {
-    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
-    if(ex["image"].toString().size()){
-        set_field_image(ex);
-    }
-
+    fill_html_defauld_fields(ex);
     QJsonObject arr_table = ex["table"].toObject();
     for(int i = 0; i < ex["count_rows"].toInt(); i++){
         for(int j = 0; j < ex["count_cols"].toInt(); j++){
@@ -223,16 +209,13 @@ void MainWindow::fill_html_table_word_ex(QJsonObject ex)
             }
         }
     }
-
-    set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
-    set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
 }
 
 void MainWindow::create_html_threetf_ex(QJsonObject ex)
 {
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_threetf(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["options"].toArray().size()) + ")",
-                                [&](QVariant result)->void{
+            [&](QVariant result)->void{
         flg = true;
     });
     while(!flg){
@@ -257,14 +240,14 @@ void MainWindow::fill_html_threetf_ex(QJsonObject ex)
         set_field_string(list_options[i], "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
         bool flg_temp = false;
         form->page()->runJavaScript("document.getElementById(\"list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i) + "\").value =\"" + list_options[i] + "\";",
-                                    [&](QVariant result)->void{
+                [&](QVariant result)->void{
             flg_temp = true;
         });
         for(int j = 0; j < list_answers.size(); j++){
             if(list_answers[j] == list_options[i]){
                 bool flg_temp = false;
                 form->page()->runJavaScript("document.getElementById(\"checkbox_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i) + "\").checked = true;",
-                                            [&](QVariant result)->void{
+                        [&](QVariant result)->void{
                     flg_temp = true;
                 });
                 while(!flg_temp){
@@ -338,7 +321,7 @@ void MainWindow::set_field_image(QJsonObject ex)
 
         QString html;
         html += QString("<img src='data:image/png;base64,%1'/>").arg(QString(ba));
-                bool flag_finish = false;
+        bool flag_finish = false;
         form->page()->runJavaScript("document.getElementById(\"image_" + QString::number(ex["id"].toInt()) + "\").innerHTML += \"" + html + "\";",
                 [&](QVariant result)->void{
             flag_finish = true;
