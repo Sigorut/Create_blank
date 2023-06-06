@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->verticalLayout_2->addWidget(form);
 
     connect(ui->action_open, SIGNAL(triggered()), SLOT(slot_open_bd()));
+    connect(ui->action_save, SIGNAL(triggered()), SLOT(slot_save_bd()));
     connect(ui->butt_add_ex, SIGNAL(clicked()), SLOT(slot_add_ex()));
 
 }
@@ -84,12 +85,19 @@ void MainWindow::add_form_one_ex(QJsonObject ex)
         break;
     case Ex::comp:
         create_html_comp_ex(ex);
+        fill_html_comp_ex(ex);
         break;
     case Ex::seq:
+        create_html_seq_ex(ex);
+        fill_html_seq_ex(ex);
         break;
     case Ex::tablword:
+        create_html_table_word_ex(ex);
+        fill_html_table_word_ex(ex);
         break;
     case Ex::treetf:
+        create_html_threetf_ex(ex);
+        fill_html_threetf_ex(ex);
         break;
     default:
         break;
@@ -128,7 +136,7 @@ void MainWindow::fill_html_num_string_ex(QJsonObject ex)
 void MainWindow::create_html_comp_ex(QJsonObject ex)
 {
     bool flg = false;
-    form->page()->runJavaScript("create_fields_for_comp(" + QString::number(id) + ")",
+    form->page()->runJavaScript("create_fields_for_comp(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["answer"].toArray().size()) + ")",
                                 [&](QVariant result)->void{
         flg = true;
     });
@@ -139,7 +147,142 @@ void MainWindow::create_html_comp_ex(QJsonObject ex)
 
 void MainWindow::fill_html_comp_ex(QJsonObject ex)
 {
+    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
+    if(ex["image"].toString().size()){
+        set_field_image(ex);
+    }
+    QJsonArray arr_answ = ex["answer"].toArray();
+    QJsonObject single_answ;
+    for(int i = 0; i < arr_answ.size(); i++){
+        single_answ = arr_answ[i].toObject();
+        foreach(const QString& key, single_answ.keys()) {
+            QJsonValue value = single_answ.value(key);
+            set_field_string(key, "list_A_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
+            set_field_string(value.toString(), "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
+        }
+    }
+    set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
+}
 
+void MainWindow::create_html_seq_ex(QJsonObject ex)
+{
+    bool flg = false;
+    form->page()->runJavaScript("create_fields_for_seq(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["options"].toArray().size()) + ")",
+                                [&](QVariant result)->void{
+        flg = true;
+    });
+    while(!flg){
+        QApplication::processEvents();
+    }
+}
+
+void MainWindow::fill_html_seq_ex(QJsonObject ex)
+{
+        set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
+        if(ex["image"].toString().size()){
+            set_field_image(ex);
+        }
+        QJsonArray arr_options = ex["options"].toArray();
+        QJsonObject single_option;
+        for(int i = 0; i < arr_options.size(); i++){
+            single_option = arr_options[i].toObject();
+            foreach(const QString& key, single_option.keys()) {
+                QJsonValue value = single_option.value(key);
+                set_field_string(value.toString(), "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
+            }
+        }
+        set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
+        set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
+}
+
+void MainWindow::create_html_table_word_ex(QJsonObject ex)
+{
+    bool flg = false;
+    form->page()->runJavaScript("create_fields_for_table_word(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["count_rows"].toInt()) + ", " + QString::number(ex["count_cols"].toInt()) + ")",
+                                [&](QVariant result)->void{
+        flg = true;
+    });
+    while(!flg){
+        QApplication::processEvents();
+    }
+
+}
+
+void MainWindow::fill_html_table_word_ex(QJsonObject ex)
+{
+    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
+    if(ex["image"].toString().size()){
+        set_field_image(ex);
+    }
+
+    QJsonObject arr_table = ex["table"].toObject();
+    for(int i = 0; i < ex["count_rows"].toInt(); i++){
+        for(int j = 0; j < ex["count_cols"].toInt(); j++){
+            if(arr_table[QString::number(i) + QString::number(j)].toString() != "~ans~"){
+                set_field_string(arr_table[QString::number(i) + QString::number(j)].toString(), "table_"+  QString::number(ex["id"].toInt()) + "_" + QString::number(i) + "_" + QString::number(j));
+            }
+        }
+    }
+
+    set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
+    set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
+}
+
+void MainWindow::create_html_threetf_ex(QJsonObject ex)
+{
+    bool flg = false;
+    form->page()->runJavaScript("create_fields_for_threetf(" + QString::number(ex["id"].toInt()) + ", " + QString::number(ex["options"].toArray().size()) + ")",
+                                [&](QVariant result)->void{
+        flg = true;
+    });
+    while(!flg){
+        QApplication::processEvents();
+    }
+}
+
+void MainWindow::fill_html_threetf_ex(QJsonObject ex)
+{
+    fill_html_defauld_fields(ex);
+    QJsonArray options = ex["options"].toArray();
+    QJsonArray answers = ex["answer"].toArray();
+    QStringList list_options, list_answers;
+    for(int i = 0; i < options.size(); i++){
+        list_options << options[i].toString();
+    }
+    for(int i = 0; i < answers.size(); i++){
+        list_answers << answers[i].toString();
+    }
+    qDebug() << list_answers << list_options;
+    for(int i = 0; i < list_options.size(); i++){
+        set_field_string(list_options[i], "list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i));
+        bool flg_temp = false;
+        form->page()->runJavaScript("document.getElementById(\"list_1_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i) + "\").value =\"" + list_options[i] + "\";",
+                                    [&](QVariant result)->void{
+            flg_temp = true;
+        });
+        for(int j = 0; j < list_answers.size(); j++){
+            if(list_answers[j] == list_options[i]){
+                bool flg_temp = false;
+                form->page()->runJavaScript("document.getElementById(\"checkbox_" + QString::number(ex["id"].toInt()) + "_" + QString::number(i) + "\").checked = true;",
+                                            [&](QVariant result)->void{
+                    flg_temp = true;
+                });
+                while(!flg_temp){
+                    QApplication::processEvents();
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::fill_html_defauld_fields(QJsonObject ex)
+{
+    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
+    if(ex["image"].toString().size()){
+        set_field_image(ex);
+    }
+    set_field_string(ex["answer"].toString(), "answer_" + QString::number(ex["id"].toInt()));
+    set_field_string(ex["solution"].toString(), "solution_" + QString::number(ex["id"].toInt()));
 }
 
 void MainWindow::delete_html_ex(int id)
@@ -212,6 +355,25 @@ void MainWindow::slot_open_bd()
                                                         "/",
                                                         tr("*.json"));
     if(!path_to_file.isEmpty()){
+        if(list_ex.size() !=0){
+            for(int j = list_ex.size() - 1; j >= 0; j--){
+                delete_html_ex(list_ex_add_butt[j]->objectName().toInt());
+                delete list_ex[j];
+                delete list_ex_add_butt[j];
+                delete list_layout[j];
+                delete list_widget[j];
+                delete list_items[j];
+                list_ex.remove(j);
+                list_ex_add_butt.remove(j);
+                list_layout.remove(j);
+                list_widget.remove(j);
+                list_items.remove(j);
+                last_index--;
+                count_ex--;
+                qDebug() << j;
+            }
+            ui->listWidget->clear();
+        }
         //        set_enabled_butt(true);
         path_to_bd = path_to_file;
         QFile bd(path_to_bd);
@@ -222,7 +384,30 @@ void MainWindow::slot_open_bd()
             json_content = QJsonDocument::fromJson(text_content.toUtf8());
             json_all_ex = json_content.array();
             bd.close();
+            fill_list_widget(json_all_ex);
         }
+    }
+}
+
+void MainWindow::slot_save_bd()
+{
+    QString path_to_file = QFileDialog::getSaveFileName(this, tr("Сохранить"),
+                                                        "/",
+                                                        tr("JSON (*.json)"));
+    if(!path_to_file.isEmpty()){
+        path_to_bd = path_to_file;
+    }
+    QFile bd(path_to_bd);
+    QJsonArray json_all_ex_on_file;
+    if(bd.open(QIODevice::WriteOnly)){
+        QJsonDocument jsonDoc;
+        for(int i = 0; i < json_all_ex.size(); i++){
+            QJsonObject single = json_all_ex[i].toObject();
+            json_all_ex_on_file << single;
+        }
+        jsonDoc.setArray(json_all_ex_on_file);
+        bd.write(jsonDoc.toJson());
+
     }
 }
 

@@ -26,7 +26,14 @@ input.table_field{
     border: none;
     width: calc(20vw);
 }
+p.table_field{
+    width: calc(30vw);
+}
 
+img{
+    width: calc(60vw);
+    height: auto;
+}
 h4{
     text-align: center;
 }

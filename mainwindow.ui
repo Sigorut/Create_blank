@@ -55,6 +55,7 @@
      <string>Файл</string>
     </property>
     <addaction name="action_open"/>
+    <addaction name="action_save"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -65,6 +66,14 @@
    </property>
    <property name="shortcut">
     <string>Shift+O</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="text">
+    <string>Сохранить как</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+S</string>
    </property>
   </action>
  </widget>

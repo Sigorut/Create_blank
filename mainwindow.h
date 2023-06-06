@@ -57,9 +57,20 @@ private:
     void create_html_comp_ex(QJsonObject ex);
     void fill_html_comp_ex(QJsonObject ex);
 
+    void create_html_seq_ex(QJsonObject ex);
+    void fill_html_seq_ex(QJsonObject ex);
+
+    void create_html_table_word_ex(QJsonObject ex);
+    void fill_html_table_word_ex(QJsonObject ex);
+
+    void create_html_threetf_ex(QJsonObject ex);
+    void fill_html_threetf_ex(QJsonObject ex);
+
+    void fill_html_defauld_fields(QJsonObject ex);
     void delete_html_ex(int id);
 private slots:
     void slot_open_bd();
+    void slot_save_bd();
     void slot_delete_ex();
     void slot_add_ex();
 };
