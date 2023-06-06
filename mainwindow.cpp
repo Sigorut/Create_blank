@@ -39,7 +39,8 @@ void MainWindow::fill_list_widget(QJsonArray json_select_ex)
 
     //    }
 
-
+    QPixmap pix(":/trash.ico");
+    QIcon icon(pix);
     foreach (const QJsonValue & value, json_select_ex){
         QJsonObject obj = value.toObject();
 
@@ -53,6 +54,7 @@ void MainWindow::fill_list_widget(QJsonArray json_select_ex)
         list_ex[last_index]->setText("Задание " + QString::number(count_ex+1));
         list_ex_add_butt[last_index]->setObjectName(QString::number(obj.value("id").toInt()));
         list_ex_add_butt[last_index]->setMaximumSize(25,25);
+        list_ex_add_butt[last_index]->setIcon(icon);
         connect(list_ex_add_butt[last_index], SIGNAL(clicked()), SLOT(slot_delete_ex()));
 
         list_layout[last_index]->addWidget(list_ex[last_index]);
