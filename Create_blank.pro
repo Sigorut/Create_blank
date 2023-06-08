@@ -12,17 +12,20 @@ SOURCES += \
     add_ex.cpp \
     edit_ex.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    view_28line.cpp
 
 HEADERS += \
     add_ex.h \
     edit_ex.h \
-    mainwindow.h
+    mainwindow.h \
+    view_28line.h
 
 FORMS += \
     add_ex.ui \
     edit_ex.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    view_28line.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

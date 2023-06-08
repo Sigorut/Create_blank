@@ -101,6 +101,9 @@ void MainWindow::add_form_one_ex(QJsonObject ex)
         create_html_threetf_ex(ex);
         fill_html_threetf_ex(ex);
         break;
+    case Ex::line:
+        create_html_28line_ex(ex);
+        fill_html_28line_ex(ex);
     default:
         break;
     }
@@ -109,12 +112,6 @@ void MainWindow::add_form_one_ex(QJsonObject ex)
 
 void MainWindow::create_html_num_string_ex(int id, int type)
 {
-    //    QString type_ex;
-    //    if(type == 1){
-    //        type_ex = "num";
-    //    }else{
-    //        type_ex = "string";
-    //    }
     bool flg = false;
     form->page()->runJavaScript("create_fields_for_num(" + QString::number(id) + ")",
                                 [&](QVariant result)->void{
@@ -260,6 +257,30 @@ void MainWindow::fill_html_threetf_ex(QJsonObject ex)
     }
 }
 
+void MainWindow::create_html_28line_ex(QJsonObject ex)
+{
+    bool flg = false;
+    form->page()->runJavaScript("create_fields_for_28line(" + QString::number(ex["id"].toInt()) + ")",
+            [&](QVariant result)->void{
+        flg = true;
+    });
+    while(!flg){
+        QApplication::processEvents();
+    }
+}
+
+void MainWindow::fill_html_28line_ex(QJsonObject ex)
+{
+    set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
+    set_field_string("<br>5\'- " + ex["codogenic"].toString() + " -3\'", "text_" + QString::number(ex["id"].toInt()));
+    set_field_string("<br>3\'- " + ex["transcribed"].toString() + " -5\'", "text_" + QString::number(ex["id"].toInt()));
+    set_field_string(ex["iRNA"].toString(), "answer_iRNA_" + QString::number(ex["id"].toInt()));
+    set_field_string(ex["polypeptide"].toString(), "answer_poly_" + QString::number(ex["id"].toInt()));
+    if(ex["image"].toString().size()){
+        set_field_image(ex);
+    }
+}
+
 void MainWindow::fill_html_defauld_fields(QJsonObject ex)
 {
     set_field_string(ex["text_ex"].toString(), "text_" + QString::number(ex["id"].toInt()));
@@ -299,7 +320,7 @@ void MainWindow::set_field_string(QString value, QString field_id)
 {
     bool flag_finish = false;
     qDebug() << field_id;
-    form->page()->runJavaScript("document.getElementById(\"" + field_id + "\").innerText = \"" + value + "\";",
+    form->page()->runJavaScript("document.getElementById(\"" + field_id + "\").innerHTML += \"" + value + "\";",
                                 [&](QVariant result)->void{
         flag_finish = true;
     });

@@ -16,7 +16,8 @@ enum Ex{
     comp,
     seq,
     tablword,
-    treetf
+    treetf,
+    line
 };
 
 namespace Ui {

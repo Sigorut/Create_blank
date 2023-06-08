@@ -241,6 +241,7 @@ void Edit_ex::slot_push_data_to_form()
 }
 
 
+
 void Edit_ex::set_field_string(QString value, QString field_id)
 {
     bool flag_finish = false;

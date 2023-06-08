@@ -66,8 +66,12 @@ private:
     void create_html_threetf_ex(QJsonObject ex);
     void fill_html_threetf_ex(QJsonObject ex);
 
+    void create_html_28line_ex(QJsonObject ex);
+    void fill_html_28line_ex(QJsonObject ex);
+
     void fill_html_defauld_fields(QJsonObject ex);
     void delete_html_ex(int id);
+
 private slots:
     void slot_open_bd();
     void slot_save_bd();

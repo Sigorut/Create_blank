@@ -232,6 +232,40 @@ function create_fields_for_threetf(id_ex, count_options){
     block.appendChild(main_div);
 }
 
+function create_fields_for_28line(id_ex) {
+    const main_div = document.createElement("div");
+    main_div.id = "id_" + id_ex;
+    const pbody_div = document.createElement("div");
+    pbody_div.className = "pbody";
+    const p_text_ex = document.createElement("p");
+    p_text_ex.innerHTML += "<b>Задание:</b>";
+    const text_ex = document.createElement("p");
+    text_ex.id = "text_" + id_ex;
+    text_ex.readOnly = true;
+    p_text_ex.appendChild(text_ex);
+    const p_image = document.createElement("p");
+    p_image.id = "image_" + id_ex;
+    const p_text_answer = document.createElement("p");
+    p_text_answer.innerHTML = "<b>Ответ:</b>";
+    const p_answer_iRNA_text = document.createElement("p");
+    p_answer_iRNA_text.innerHTML = "иРНК";
+    const p_answer_iRNA = document.createElement("p");
+    p_answer_iRNA.id = "answer_iRNA_" + id_ex;
+    const p_answer_poly_text = document.createElement("p");
+    p_answer_poly_text.innerHTML = "Полипептидная цепочка(фрагмент белка)";
+    const p_answer_poly = document.createElement("p");
+    p_answer_poly.id = "answer_poly_" + id_ex;
+    pbody_div.appendChild(p_text_ex);
+    pbody_div.appendChild(p_image);
+    pbody_div.appendChild(p_text_answer);
+    pbody_div.appendChild(p_answer_iRNA_text);
+    pbody_div.appendChild(p_answer_iRNA);
+    pbody_div.appendChild(p_answer_poly_text);
+    pbody_div.appendChild(p_answer_poly);
+    main_div.appendChild(pbody_div);
+    const block = document.getElementById("num");
+    block.appendChild(main_div);
+}
 
 function delete_ex(id_ex) {
     var ex = document.getElementById("id_" + id_ex);

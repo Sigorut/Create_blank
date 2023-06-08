@@ -12,6 +12,7 @@
 #include <QJsonValue>
 #include <QModelIndexList>
 #include "edit_ex.h"
+#include "view_28line.h"
 
 namespace Ui {
 class Add_ex;
@@ -35,10 +36,15 @@ private:
     void open_bd();
     void update_model(QJsonArray ex_all);
     QJsonArray get_all_ex();
+
+    QString get_type(int type);
+    QString get_parent_type(int parent_type);
+
 private slots:
     void slot_current_index_model(const QModelIndex &item);
     void slot_open_bd();
     void slot_open_current_ex();
+    void slot_search();
 };
 
 #endif // ADD_EX_H

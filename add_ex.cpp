@@ -15,6 +15,7 @@ Add_ex::Add_ex(QWidget *parent) :
     connect(ui->butt_open, SIGNAL(clicked()), SLOT(slot_open_bd()));
     connect(ui->table_view, SIGNAL(doubleClicked(QModelIndex)),SLOT(slot_open_current_ex()));
     connect(ui->table_view, SIGNAL(clicked(const QModelIndex &)),SLOT(slot_current_index_model(const QModelIndex &)));
+    connect(ui->butt_search, SIGNAL(clicked()), SLOT(slot_search()));
     connect(ui->butt_add, SIGNAL(clicked()), SLOT(accept()));
     connect(ui->butt_cancel, SIGNAL(clicked()), SLOT(reject()));
 
@@ -103,11 +104,34 @@ void Add_ex::slot_open_current_ex()
             break;
         }
     }
-
-    Edit_ex edit_ex_form(single_ex["type"].toInt(), single_ex["parent_type"].toInt(), this);
-    edit_ex_form.set_ex(single_ex);
-    edit_ex_form.exec();
+    if(single_ex["type"].toInt() > 6){
+        View_28line view_ex(single_ex.toObject(), this);
+        view_ex.exec();
+    }else{
+        Edit_ex edit_ex_form(single_ex["type"].toInt(), single_ex["parent_type"].toInt(), this);
+        edit_ex_form.set_ex(single_ex);
+        edit_ex_form.exec();
+    }
 }
+
+void Add_ex::slot_search()
+{
+    QString data;
+    QString search_line = ui->lineEdit_search->text();
+    search_line = search_line.toLower();
+    for(int i = 0; i < model->rowCount(); i++){
+        ui->table_view->hideRow(i);
+        for(int j = 0; j < model->columnCount(); j++){
+            qDebug() << model->item(i,j)->text();
+            data = model->item(i,j)->text();
+            data = data.toLower();
+            if(data.contains(search_line)){
+                ui->table_view->showRow(i);
+            }
+        }
+    }
+}
+
 
 
 void Add_ex::open_bd()
@@ -145,12 +169,16 @@ void Add_ex::update_model(QJsonArray ex_all)
     labels << "Тип задания" << "Вид Задания" << "Текст задания" << "id";
     model->setHorizontalHeaderLabels(labels);
     ui->table_view->clearMask();
+    QString type, parent_type;
     foreach (const QJsonValue & value, ex_all) {
         QJsonObject obj = value.toObject();
         qDebug() << obj.value("type").toInt();
-        item = new QStandardItem(QString("%1").arg(obj.value("type").toInt()));
+        type = get_type(obj.value("type").toInt());
+        item = new QStandardItem(QString("%1").arg(type));
         model->setItem(i,0,item);
-        item = new QStandardItem(QString("%1").arg(obj.value("parent_type").toInt()));
+        parent_type = get_parent_type(obj.value("parent_type").toInt());
+//        item = new QStandardItem(QString("%1").arg(obj.value("parent_type").toInt()));
+        item = new QStandardItem(QString("%1").arg(parent_type));
         model->setItem(i,1,item);
         QString valuetemp = obj.value("text_ex").toString();
         if(valuetemp.contains("\\n")){
@@ -172,6 +200,59 @@ void Add_ex::update_model(QJsonArray ex_all)
     }
     ui->table_view->setColumnHidden(3, true);
     ui->table_view->sortByColumn(sort_column, Qt::SortOrder(sort_order));
+}
+QString Add_ex::get_type(int type)
+{
+    switch (type) {
+    case 1:
+        return "Числовой ответ";
+        break;
+    case 2:
+        return "Строковый ответ";
+        break;
+    case 3:
+        return "Сопоставление";
+        break;
+    case 4:
+        return "Последовательность";
+        break;
+    case 5:
+        return "Пропущенное слово";
+        break;
+    case 6:
+        return "Выбор верных/неверных";
+        break;
+    case 7:
+        return "28line";
+        break;
+    default:
+        break;
+    }
+    return "";
+}
+
+QString Add_ex::get_parent_type(int parent_type)
+{
+    switch (parent_type) {
+    case 1:
+        return "Числовой";
+        break;
+    case 2:
+        return "Строковый";
+        break;
+    case 3:
+        return "Табличный";
+        break;
+    case 4:
+        return "Множественный";
+        break;
+    case 5:
+        return "28line";
+        break;
+    default:
+        break;
+    }
+        return "";
 }
 
 
